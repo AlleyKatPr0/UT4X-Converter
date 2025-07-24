@@ -14,9 +14,9 @@
 		<java.version>21</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<javafx.version>21</javafx.version>
-		<slf4j.version>2.0.13</slf4j.version>
-		<log4j.version>2.23.1</log4j.version>
-		<twelvemonkeysio.version>3.10.1</twelvemonkeysio.version>
+		<slf4j.version>2.0.16</slf4j.version>
+		<log4j.version>2.24.3</log4j.version>
+		<twelvemonkeysio.version>3.12.0</twelvemonkeysio.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>org.xtx.ut4converter.MainApp</mainClass>
 		<junit.version>5.10.2</junit.version>
@@ -34,7 +34,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>3.14.0</version>
 				<configuration>
 					<release>21</release>
 					<source>21</source>
@@ -55,13 +55,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
+				<version>3.5.3</version>
 			</plugin>
 
 			<!-- creates UT4X-Converter jar file into /libs folder -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>3.4.2</version>
 				<configuration>
 					<outputDirectory>${project.build.directory}/libs</outputDirectory>
 					<archive>
@@ -163,7 +163,7 @@
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>3.8.1</version>
 				<executions>
 					<execution>
 						<id>copy-libs</id>
@@ -192,6 +192,19 @@
 				</executions>
 			</plugin>
 
+			<!-- OWASP Dependency Check for security vulnerabilities -->
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>11.1.0</version>
+				<configuration>
+					<cveValidForHours>24</cveValidForHours>
+					<failBuildOnCVSS>8</failBuildOnCVSS>
+					<skipProvidedScope>true</skipProvidedScope>
+					<skipTestScope>true</skipTestScope>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -210,7 +223,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
-						<version>3.2.0</version>
+						<version>3.5.1</version>
 						<executions>
 							<execution>
 								<id>create-package</id>
@@ -333,7 +346,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.16.1</version>
+			<version>2.20.0</version>
 		</dependency>
 
 		<dependency>
@@ -345,19 +358,19 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.14.0</version>
+			<version>3.18.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.17.0</version>
+			<version>2.19.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version>
+			<version>1.18.38</version>
 			<scope>provided</scope>
 		</dependency>
 

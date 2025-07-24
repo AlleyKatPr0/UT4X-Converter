@@ -34,6 +34,7 @@ public class T3DUtils {
 	 * @return
 	 * @deprecated DELETE AND MERGE WITH getString
 	 */
+	@Deprecated
 	public static String getStringTEMP(String line, String split) {
 		if (!line.contains(split)) {
 			return null;
