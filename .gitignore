@@ -7,3 +7,8 @@
 /.idea
 /app/conf/*TextureDb*.json
 /app/conf/ApplicationConfig.json
+
+# Security scanning reports
+dependency-check-report.html
+dependency-check-report.xml
+dependency-check-report.json

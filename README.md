@@ -71,23 +71,52 @@ Check wiki page at: [UT Converter Wiki](https://github.com/xtremexp/UT4X-Convert
 
 ## Build and run from source code
 
-- Install [git](https://gitforwindows.org/)
-- Install [maven](https://maven.apache.org/)
-- Clone project using this command line:
-> git clone https://github.com/xtremexp/UT4X-Converter
-- Download and install [OpenJDK19](https://jdk.java.net/19/):
-- Build and run with maven command :
-> mvn clean javafx:run
-- Package application with maven command (.exe install file will be generated in <project_path>/target/package folder) :
-> mvn clean install
+### Prerequisites
+- [Git](https://gitforwindows.org/)
+- Java 21 (recommended: [OpenJDK 21](https://jdk.java.net/21/) or [Eclipse Temurin 21](https://adoptium.net/))
 
-Notes :
--  UI(.fxml files) can be easily modified with [Scene Builder editor](https://gluonhq.com/products/scene-builder/)
--  ExtractTextures.exe and UtxAnalyser.exe programs have been compiled using modified source code from "UT Package Delphi Unit" by Antonio Corbero
-  - Download and install [Delphi Comunity Edition](https://www.embarcadero.com/products/delphi/starter)
+### Quick Start
+1. Clone the project:
+   ```bash
+   git clone https://github.com/xtremexp/UT4X-Converter
+   cd UT4X-Converter
+   ```
+
+2. **Option A: Using Maven Wrapper (Recommended)**
+   ```bash
+   # Build and run the application
+   ./mvnw clean javafx:run
+   
+   # Package the application (.exe installer will be generated in target/package folder on Windows)
+   ./mvnw clean install
+   
+   # Run tests
+   ./mvnw test
+   
+   # Check for security vulnerabilities
+   ./mvnw dependency-check:check
+   ```
+
+3. **Option B: Using System Maven**
+   - Install [Maven](https://maven.apache.org/) (version 3.6.3 or higher)
+   - Build and run:
+     ```bash
+     mvn clean javafx:run
+     mvn clean install
+     ```
+
+### Development Notes
+- UI (.fxml files) can be easily modified with [Scene Builder editor](https://gluonhq.com/products/scene-builder/)
+- ExtractTextures.exe and UtxAnalyser.exe programs have been compiled using modified source code from "UT Package Delphi Unit" by Antonio Corbero
+  - Download and install [Delphi Community Edition](https://www.embarcadero.com/products/delphi/starter)
   - Download and extract [UT Package Delphi Unit](https://www.acordero.org/projects/unreal-tournament-package-delphi-library/)
   - Add the /src/delphi/-.dpr files where you installed UT Package Delphi Unit
   - Open ExtractTextures.dpr or UtxAnalyser.dpr with the IDE
+
+### Build Requirements
+- **Java**: 21 (LTS)
+- **Maven**: 3.6.3 or higher (or use included Maven Wrapper)
+- **OS**: Windows 7/8/10/11 (64-bit) for full packaging support
 
 ## External programs used
 These programs are being used during conversion process.
