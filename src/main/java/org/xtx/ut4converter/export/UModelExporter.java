@@ -122,7 +122,16 @@ public class UModelExporter extends UTPackageExtractor {
 		// Z:\\TEMP\\umodel_win32/UmodelExport/2k4Trophies/AllTrophies
 
 		String[] split = logLine.split(" to ");
+		if (split.length < 2) {
+			logger.log(Level.WARNING, "Could not parse export path from log line: " + logLine);
+			return;
+		}
+		
 		String[] split2 = split[0].split(" "); // Exporting Texture bdr02BA
+		if (split2.length < 3) {
+			logger.log(Level.WARNING, "Could not parse resource name from: " + split[0]);
+			return;
+		}
 
 		// for resources that have been exported by umodel
 		// with package != original package (staticmesh package -> texture (in
@@ -137,7 +146,12 @@ public class UModelExporter extends UTPackageExtractor {
 		// Z:\\TEMP\\umodel_win32\\UmodelExport/ASC_Arch2/SM/Mesh/trophy1
 		String exportFolder = split[1].substring(0, split[1].lastIndexOf("/"));
 
-		String packageName = split[1].substring(tempFolderPathLength + 1).split("/")[0];
+		String[] pathParts = split[1].substring(tempFolderPathLength + 1).split("/");
+		if (pathParts.length < 1) {
+			logger.log(Level.WARNING, "Could not parse package name from export path: " + split[1]);
+			return;
+		}
+		String packageName = pathParts[0];
 
 		String group = null;
 		int startIdxGroup = exportFolder.indexOf(packageName, tempFolderPathLength) + packageName.length() + 1;

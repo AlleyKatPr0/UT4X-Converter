@@ -33,10 +33,22 @@ public class SimpleTextureExtractor extends UTPackageExtractor {
 	 *
 	 * @param texturePackageFile UE1/2 texture package to export
 	 * @param outputFolder       Output folder
-	 * @return Command line
+	 * @return Command array (for secure ProcessBuilder usage)
 	 */
+	public static String[] getCommandArray(final File texturePackageFile, final File outputFolder) {
+		return new String[]{
+			Installation.getExtractTextures().getAbsolutePath(),
+			texturePackageFile.getAbsolutePath(),
+			outputFolder.getAbsolutePath()
+		};
+	}
+
+	/**
+	 * @deprecated Use getCommandArray() instead to prevent command injection
+	 */
+	@Deprecated
 	public static String getCommand(final File texturePackageFile, final File outputFolder) {
-		return "\"" + Installation.getExtractTextures() + "\"  \"" + texturePackageFile + "\" \"" + outputFolder + "\"";
+		return "\"" + Installation.getExtractTextures().getAbsolutePath() + "\"  \"" + texturePackageFile + "\" \"" + outputFolder + "\"";
 	}
 
 	@Override
@@ -47,15 +59,16 @@ public class SimpleTextureExtractor extends UTPackageExtractor {
 			return null;
 		}
 
-		String command = getCommand(ressource.getUnrealPackage().getFileContainer(mapConverter), mapConverter.getTempExportFolder());
-		command += " \"" + mapConverter.getTempExportFolder() + "\"";
+		String[] commandArray = getCommandArray(
+			ressource.getUnrealPackage().getFileContainer(mapConverter), 
+			mapConverter.getTempExportFolder()
+		);
 
 		List<String> logLines = new ArrayList<>();
 
 		logger.log(Level.INFO, "Exporting " + ressource.getUnrealPackage().getFileContainer(mapConverter).getName() + " with " + getName());
-		logger.log(Level.FINE, command);
 
-		Installation.executeProcess(command, logLines);
+		Installation.executeProcess(commandArray, logLines, logger, Level.FINE, null);
 
 		ressource.getUnrealPackage().setExported(true);
 
@@ -79,7 +92,20 @@ public class SimpleTextureExtractor extends UTPackageExtractor {
 
 	private void parseRessourceExported(String logLine, UPackage unrealPackage) {
 
-		String name = logLine.split("texture ")[1].split("\\.")[0];
+		// Add bounds checking to prevent ArrayIndexOutOfBoundsException
+		String[] textureParts = logLine.split("texture ");
+		if (textureParts.length < 2) {
+			logger.log(Level.WARNING, "Could not parse texture name from log line: " + logLine);
+			return;
+		}
+		
+		String[] nameParts = textureParts[1].split("\\.");
+		if (nameParts.length < 1) {
+			logger.log(Level.WARNING, "Could not parse texture name from: " + textureParts[1]);
+			return;
+		}
+		
+		String name = nameParts[0];
 		// not sharing group info unfortunately ..
 
 		File exportedFile = new File(mapConverter.getTempExportFolder().getAbsolutePath() + File.separator + name + ".bmp");
