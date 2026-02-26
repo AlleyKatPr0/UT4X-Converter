@@ -140,9 +140,8 @@ public class SettingsSceneController implements Initializable {
 				}
 			});
 		} catch (IOException ex) {
-			ex.printStackTrace();
 			Logger.getLogger(SettingsSceneController.class.getName()).log(Level.SEVERE, null, ex);
-			showErrorMessage("An error occured while loading UserConfig file :" + ex.getMessage());
+			showErrorMessage("An error occurred while loading UserConfig file :" + ex.getMessage());
 		}
 	}
 

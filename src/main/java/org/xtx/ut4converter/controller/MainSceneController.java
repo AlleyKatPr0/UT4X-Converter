@@ -138,7 +138,6 @@ public class MainSceneController implements Initializable {
 				checkForUpdate(false);
 			}
 		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
 			logger.error("initialize " + url, e);
 		}
 	}
@@ -310,7 +309,6 @@ public class MainSceneController implements Initializable {
 				dialogStage.showAndWait();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("Error loading file", e);
 		}
 	}
@@ -372,7 +370,6 @@ public class MainSceneController implements Initializable {
 				showSettings();
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
 			logger.error("convertUtxMap " + inputGame.getName() + " to " + outputGame.getName(), t);
 
 			Alert alert = new Alert(AlertType.ERROR);
