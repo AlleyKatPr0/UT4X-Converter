@@ -1,0 +1,106 @@
+﻿/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.xtx.ut4converter.tools;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+/**
+ *
+ * @author XtremeXp
+ */
+public class FileUtils {
+
+	public static String getExtension(File file) {
+
+		if (file == null) {
+			return null;
+		}
+
+		String name = file.getName();
+		int idx = name.lastIndexOf('.');
+		if (idx == -1 || idx == name.length() - 1) {
+			return "";
+		}
+
+		return name.substring(idx + 1);
+	}
+
+	public static File changeExtension(File file, String newExtension) {
+
+		if (file == null) {
+			return null;
+		}
+
+		String path = file.getAbsolutePath();
+		int idx = path.lastIndexOf('.');
+		if (idx == -1) {
+			// no extension, append
+			if (newExtension.startsWith(".")) {
+				return new File(path + newExtension);
+			} else {
+				return new File(path + "." + newExtension);
+			}
+		} else {
+			// replace existing extension
+			if (newExtension.startsWith(".")) {
+				return new File(path.substring(0, idx) + newExtension);
+			} else {
+				return new File(path.substring(0, idx) + "." + newExtension);
+			}
+		}
+	}
+
+	public static Charset detectEncoding(File file) throws IOException {
+
+		if (file == null || !file.exists()) {
+			throw new IllegalArgumentException("File not specified or invalid file");
+		}
+
+		// Detect BOM (best-effort). If none found, fall back to UTF-8.
+		try (final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+			bis.mark(4);
+			int[] bom = new int[4];
+			bom[0] = bis.read();
+			bom[1] = bis.read();
+			bom[2] = bis.read();
+			bom[3] = bis.read();
+			bis.reset();
+
+			// UTF-8 BOM: EF BB BF
+			if (bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF) {
+				return StandardCharsets.UTF_8;
+			}
+			// UTF-16 BE BOM: FE FF
+			if (bom[0] == 0xFE && bom[1] == 0xFF) {
+				return StandardCharsets.UTF_16BE;
+			}
+			// UTF-16 LE BOM: FF FE
+			if (bom[0] == 0xFF && bom[1] == 0xFE) {
+				return StandardCharsets.UTF_16LE;
+			}
+
+			// No BOM detected: peek into the first KB to see if it contains a 0 byte -> likely UTF-16
+			byte[] sample = new byte[1024];
+			int read = bis.read(sample);
+			if (read > 0) {
+				for (int i = 0; i < read; i++) {
+					if (sample[i] == 0) {
+						return StandardCharsets.UTF_16;
+					}
+				}
+			}
+
+			return StandardCharsets.UTF_8;
+		}
+	}
+}

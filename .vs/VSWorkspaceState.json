@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\.github",
-    "\\.github\\workflows",
-    "\\app",
-    "\\app\\utxextractor",
     "\\src",
+    "\\src\\main",
     "\\src\\main\\java",
+    "\\src\\main\\java\\net",
+    "\\src\\main\\java\\net\\nikr",
+    "\\src\\main\\java\\net\\nikr\\dds",
     "\\src\\main\\java\\org",
     "\\src\\main\\java\\org\\xtx",
-    "\\src\\main\\java\\org\\xtx\\ut4converter",
-    "\\src\\main\\java\\org\\xtx\\ut4converter\\t3d"
+    "\\src\\main\\java\\org\\xtx\\ut4converter"
   ],
-  "SelectedNode": "\\app\\utxextractor\\UtxAnalyser.exe",
+  "SelectedNode": "\\src\\main\\java\\org\\xtx\\ut4converter\\t3d",
   "PreviewInSolutionExplorer": false
 }

@@ -1,0 +1,144 @@
+﻿/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.xtx.ut4converter.geom;
+
+
+import org.xtx.ut4converter.ucore.UnrealEngine;
+
+import java.util.Objects;
+
+/**
+ *
+ * @author XtremeXp
+ */
+public class Rotator {
+
+	/**
+	 * If true range of pitch yaw, roll is [-360;+360]
+	 * else [-32768:+32768]
+	 */
+	boolean isUE4Space;
+
+	/**
+	 * Rotate using X axis
+	 */
+	double pitch;
+	/**
+	 * Rotate using Z axis
+	 */
+	double yaw;
+	/**
+	 * Rotate using Y axis
+	 */
+	double roll;
+
+	/**
+	 * Creates a rotator in UE4 range
+	 * @param pitch Pitch
+	 * @param yaw Yaw
+	 * @param roll Roll
+	 */
+	public Rotator(double pitch, double yaw, double roll) {
+		this.pitch = pitch;
+		this.yaw = yaw;
+		this.roll = roll;
+		// Constructor creates a rotator using UE4 conventions by default
+		this.isUE4Space = true;
+	}
+
+	public double getPitch() {
+		return pitch;
+	}
+
+	public void setPitch(double pitch) {
+		this.pitch = pitch;
+	}
+
+	public double getYaw() {
+		return yaw;
+	}
+
+	public void setYaw(double yaw) {
+		this.yaw = yaw;
+	}
+
+	public double getRoll() {
+		return roll;
+	}
+
+	public void setRoll(double roll) {
+		this.roll = roll;
+	}
+
+	/**
+	 * Remove/refactor
+	 * @param engine Unreal engine
+	 * @return Size of circle in specified engine
+	 */
+	@Deprecated
+	public static double getDefaultTwoPi(UnrealEngine engine){
+		if(engine == UnrealEngine.UE4){
+			return 360d;
+		} else {
+			return 65536d;
+		}
+	}
+
+	/**
+	 * Switch between UE1/2/3 range (65536 units) and UE4 range (360 degrees)
+	 * @param isUE4Space If true means target space is UE4 space
+	 */
+	public void switchSpace(boolean isUE4Space) {
+
+		// switching from UE1/2/3 (65536 circle) to UE4 (360 degrees)
+		if (isUE4Space && !this.isUE4Space) {
+			// values are currently in 65536-based units -> convert to degrees
+			pitch *= 360d / 65536d;
+			yaw *= 360d / 65536d;
+			roll *= 360d / 65536d;
+		}
+		// switching from UE4 (360 degrees) to UE1/2/3 (65536 units)
+		else if (!isUE4Space && this.isUE4Space) {
+			// values are currently in degrees -> convert to 65536-based units
+			pitch *= 65536d / 360d;
+			yaw *= 65536d / 360d;
+			roll *= 65536d / 360d;
+
+			// Note: original UE coordinate axes conventions may differ between
+			// engine versions (e.g. rotated axes). If axis-swapping or sign
+			// adjustments are required for a specific conversion, handle them
+			// at call-site or extend this method accordingly.
+		}
+
+		this.isUE4Space = isUE4Space;
+	}
+
+	public boolean isUE4Space() {
+		return isUE4Space;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Rotator rotator = (Rotator) o;
+		return isUE4Space == rotator.isUE4Space && Double.compare(rotator.pitch, pitch) == 0 && Double.compare(rotator.yaw, yaw) == 0 && Double.compare(rotator.roll, roll) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(isUE4Space, pitch, yaw, roll);
+	}
+
+	@Override
+	public String toString() {
+		return "(Pitch=" + pitch + ",Yaw=" + yaw + ",Roll=" + roll + ")";
+	}
+
+	public String toUEString(){
+		return "(X=" + pitch + ",Y=" + roll + ",Z=" + yaw + ")";
+	}
+}

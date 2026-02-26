@@ -45,6 +45,8 @@ public class Rotator {
 		this.pitch = pitch;
 		this.yaw = yaw;
 		this.roll = roll;
+		// Constructor creates a rotator using UE4 conventions by default
+		this.isUE4Space = true;
 	}
 
 	public double getPitch() {
@@ -59,8 +61,16 @@ public class Rotator {
 		return yaw;
 	}
 
+	public void setYaw(double yaw) {
+		this.yaw = yaw;
+	}
+
 	public double getRoll() {
 		return roll;
+	}
+
+	public void setRoll(double roll) {
+		this.roll = roll;
 	}
 
 	/**
@@ -78,24 +88,29 @@ public class Rotator {
 	}
 
 	/**
-	 * Switch to UE123 range to UE4 range or vice-versa
-	 * @param isUE4Space If true means, it's UE4 space
+	 * Switch between UE1/2/3 range (65536 units) and UE4 range (360 degrees)
+	 * @param isUE4Space If true means target space is UE4 space
 	 */
 	public void switchSpace(boolean isUE4Space) {
 
-		// switch to UE123 space
+		// switching from UE1/2/3 (65536 circle) to UE4 (360 degrees)
 		if (isUE4Space && !this.isUE4Space) {
+			// values are currently in 65536-based units -> convert to degrees
 			pitch *= 360d / 65536d;
 			yaw *= 360d / 65536d;
 			roll *= 360d / 65536d;
 		}
-		// switch to UE4 space
+		// switching from UE4 (360 degrees) to UE1/2/3 (65536 units)
 		else if (!isUE4Space && this.isUE4Space) {
+			// values are currently in degrees -> convert to 65536-based units
 			pitch *= 65536d / 360d;
 			yaw *= 65536d / 360d;
 			roll *= 65536d / 360d;
 
-			// in UE4 space the original "X" axis is rotated by 180°
+			// Note: original UE coordinate axes conventions may differ between
+			// engine versions (e.g. rotated axes). If axis-swapping or sign
+			// adjustments are required for a specific conversion, handle them
+			// at call-site or extend this method accordingly.
 		}
 
 		this.isUE4Space = isUE4Space;
