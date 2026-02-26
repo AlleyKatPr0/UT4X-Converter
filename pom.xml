@@ -11,9 +11,9 @@
 	<name>UT Converter</name>
 
 	<properties>
-		<java.version>19.0.2</java.version>
+		<java.version>17</java.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
-		<javafx.version>19</javafx.version>
+		<javafx.version>17.0.2</javafx.version>
 		<slf4j.version>2.0.5</slf4j.version>
 		<log4j.version>2.25.3</log4j.version>
 		<jaxb.version>2.2.11</jaxb.version>
@@ -37,9 +37,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<release>19</release>
-					<source>19</source>
-					<target>19</target>
+					<release>17</release>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 

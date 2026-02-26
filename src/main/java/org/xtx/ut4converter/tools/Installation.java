@@ -241,17 +241,64 @@ public class Installation {
 	}
 
 	/**
+	 * Execute process with command array (SECURE - prevents command injection)
 	 * 
-	 * @param command
-	 *            Command line / path to exec file
-	 * @param logLines
-	 *            Store program lofs
+	 * @param commandArray Command and arguments as array
+	 * @param logLines Store program logs
+	 * @param logger if not null will directly log output of process to logger
+	 * @param logLevel Log level
+	 * @param timeOut Timeout in milliseconds
+	 * @return Process instance
+	 * @throws InterruptedException Exception thrown
+	 * @throws IOException Exception thrown
+	 */
+	public static synchronized Process executeProcess(String[] commandArray, List<String> logLines, Logger logger, Level logLevel, Long timeOut) throws InterruptedException, IOException {
+
+		Process pp = null;
+
+		try {
+			ProcessBuilder pb = new ProcessBuilder(commandArray);
+			pp = pb.start();
+
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(pp.getInputStream()))) {
+
+				String log;
+
+				while ((log = in.readLine()) != null) {
+					if (logger != null) {
+						logger.log(logLevel, log);
+					}
+					logLines.add(log);
+				}
+			}
+
+			if (timeOut != null) {
+				pp.waitFor(timeOut, TimeUnit.MILLISECONDS);
+			} else {
+				pp.waitFor();
+			}
+
+			return pp;
+		} finally {
+
+			if (pp != null) {
+				pp.destroy();
+			}
+		}
+	}
+
+	/**
+	 * @deprecated Use executeProcess(String[], ...) instead to prevent command injection vulnerabilities
+	 * 
+	 * @param command Command line / path to exec file
+	 * @param logLines Store program lofs
 	 * @param logger if not null will directly log output of process to logger
 	 * @param logLevel Log level
 	 * @return Program exit code (0 if everything went fine)
 	 * @throws InterruptedException Exception thrown
 	 * @throws IOException Exception thrown
 	 */
+	@Deprecated
 	public static synchronized Process executeProcess(String command, List<String> logLines, Logger logger, Level logLevel, Long timeOut) throws InterruptedException, IOException {
 
 		Runtime run;
