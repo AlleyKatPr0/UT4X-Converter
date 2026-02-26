@@ -143,7 +143,7 @@ public class MainApp extends Application {
 			MainSceneController controller = loader.getController();
 			controller.setMainApp(this);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error loading main scene", e);
 		}
 	}
 
