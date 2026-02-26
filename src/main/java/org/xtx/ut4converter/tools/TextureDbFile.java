@@ -223,11 +223,15 @@ public class TextureDbFile {
         for (final File utxFile : texPackages) {
 
             TextureFileInfo tfi = new TextureFileInfo(utxFile, Files.readAttributes(utxFile.toPath(), BasicFileAttributes.class).lastModifiedTime().toMillis());
-            final String command = Installation.getUtxAnalyser() + " \"" + utxFile.getAbsolutePath() + "\"";
+            // Use array-based command to prevent injection
+            final String[] commandArray = new String[]{
+                Installation.getUtxAnalyser().getAbsolutePath(),
+                utxFile.getAbsolutePath()
+            };
             final List<String> logLines = new ArrayList<>();
 
             logger.info("Analyzing " + utxFile.getName());
-            final Process process = Installation.executeProcess(command, logLines, logger, Level.FINE, null);
+            final Process process = Installation.executeProcess(commandArray, logLines, logger, Level.FINE, null);
             int exitCode = process.exitValue();
 
             if (exitCode != 0) {
@@ -248,14 +252,24 @@ public class TextureDbFile {
                     // Group,TextureName,Unknown,TextureType
                     final String[] split = line.split(",");
 
+                    // Add bounds checking to prevent ArrayIndexOutOfBoundsException
+                    if (split.length < 4) {
+                        logger.warning("Skipping malformed texture info line: " + line);
+                        idx++;
+                        continue;
+                    }
+
                     final String group = split[0];
                     final String name = split[1];
                     final String texType = split[3];
 
+                    String[] fileNameParts = utxFile.getName().split("\\.");
+                    String fileBaseName = fileNameParts.length > 0 ? fileNameParts[0] : utxFile.getName();
+
                     if ("NoGroup".equals(group)) {
-                        tfi.getTextures().add(new TextureInfo(name, null, utxFile.getName().split("\\.")[0], texType));
+                        tfi.getTextures().add(new TextureInfo(name, null, fileBaseName, texType));
                     } else {
-                        tfi.getTextures().add(new TextureInfo(name, group, utxFile.getName().split("\\.")[0], texType));
+                        tfi.getTextures().add(new TextureInfo(name, group, fileBaseName, texType));
                     }
                 }
 

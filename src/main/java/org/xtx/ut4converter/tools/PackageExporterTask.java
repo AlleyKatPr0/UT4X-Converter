@@ -71,43 +71,62 @@ public class PackageExporterTask extends Task<List<String>> {
 
     public List<String> exportPackage() throws IOException, InterruptedException {
 
-        final List<String> commands = new ArrayList<>();
-        String command;
+        final List<String[]> commandArrays = new ArrayList<>();
 
         Files.createDirectories(outputFolder.toPath());
 
         if (exporter.equals(EXPORTER_UMODEL)) {
-            command = Installation.getUModelPath() + " -export -sounds -groups -notgacomp -nooverwrite -nolightmap -lods -uc \"" + pkgFile + "\"";
-            command += " -out=\"" + outputFolder + "\" -path=\"" + game.getPath() + "\"";
-            commands.add(command);
+            // Build command array for umodel - prevents injection
+            List<String> cmdParts = new ArrayList<>();
+            cmdParts.add(Installation.getUModelPath().getAbsolutePath());
+            cmdParts.add("-export");
+            cmdParts.add("-sounds");
+            cmdParts.add("-groups");
+            cmdParts.add("-notgacomp");
+            cmdParts.add("-nooverwrite");
+            cmdParts.add("-nolightmap");
+            cmdParts.add("-lods");
+            cmdParts.add("-uc");
+            cmdParts.add(pkgFile.getAbsolutePath());
+            cmdParts.add("-out=" + outputFolder.getAbsolutePath());
+            cmdParts.add("-path=" + game.getPath());
+            commandArrays.add(cmdParts.toArray(new String[0]));
         }
         else if (exporter.equals(EXPORTER_STE)) {
-            commands.add(SimpleTextureExtractor.getCommand(pkgFile, outputFolder));
+            commandArrays.add(SimpleTextureExtractor.getCommandArray(pkgFile, outputFolder));
         }
         // UCC
         // For UE1/UE2 need to execute some .bat file
         // that execute ucc.exe from it's own dir else will likely fail since no support for whitespace folders
         else if (game.getUeVersion() <= 3) {
             for (String uccCommand : getUccBatchExportCommands(game, pkgFile, outputFolder)) {
-                commands.add(createExportFileBatch(uccCommand).getAbsolutePath());
+                // Create batch file, then execute it
+                File batchFile = createExportFileBatch(uccCommand);
+                commandArrays.add(new String[]{batchFile.getAbsolutePath()});
             }
         }
         // UE4/UE5
         else {
             // unrealpak only allows .pak extract
-            command = "\"" + game.getPath() + game.getPkgExtractorPath() + "\" \"" + this.pkgFile + "\" " + " -Extract \"" + this.outputFolder + "\"";
-            commands.add(command);
+            String pakExtractor = game.getPath() + game.getPkgExtractorPath();
+            commandArrays.add(new String[]{
+                pakExtractor,
+                this.pkgFile.getAbsolutePath(),
+                "-Extract",
+                this.outputFolder.getAbsolutePath()
+            });
         }
 
 
         List<CompletableFuture<List<String>>> futureCmdTaskList = new ArrayList<>();
 
-        for (String cmd : commands) {
+        for (String[] cmdArray : commandArrays) {
 
             CompletableFuture<List<String>> xxx = CompletableFuture.supplyAsync(() -> {
                 List<String> processLogs = new ArrayList<>();
                 try {
-                    Process process = Runtime.getRuntime().exec(cmd);
+                    ProcessBuilder pb = new ProcessBuilder(cmdArray);
+                    Process process = pb.start();
 
                     this.processList.add(process);
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
