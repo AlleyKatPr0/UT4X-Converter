@@ -342,7 +342,6 @@ public class T3DLevelConvertor extends Task<Object> {
 				// we don't want to stop conversion of other actors if one actor fails to
 				catch (Exception e) {
 					logger.log(Level.WARNING, "Error converting actor " + uta.getName(), e);
-					e.printStackTrace();
 				}
 
 			}
@@ -387,7 +386,6 @@ public class T3DLevelConvertor extends Task<Object> {
 					analyzeLine(line.trim());
 					linenumber++;
 				} catch (Exception e) {
-					e.printStackTrace();
 					logger.log(Level.WARNING, "Error parsing Line #" + linenumber + " for " + inT3dFile.getName());
 					if (uta != null) {
 						logger.log(Level.WARNING, "Current Actor Class: " + uta.t3dClass + " Line:");

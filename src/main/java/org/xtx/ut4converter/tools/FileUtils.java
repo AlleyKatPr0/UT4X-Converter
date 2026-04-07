@@ -139,7 +139,7 @@ public class FileUtils {
 		try (final BufferedReader bfr = new BufferedReader(new FileReader(file))) {
 
 			String line = bfr.readLine();
-			if (line.contains("\0")) {
+			if (line != null && line.contains("\0")) {
 				return StandardCharsets.UTF_16;
 			} else {
 				return StandardCharsets.UTF_8;

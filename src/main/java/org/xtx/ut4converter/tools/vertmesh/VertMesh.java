@@ -1,6 +1,8 @@
 package org.xtx.ut4converter.tools.vertmesh;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xtx.ut4converter.tools.objmesh.ObjStaticMesh;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import java.util.Objects;
  *
  */
 public class VertMesh {
+
+	private static final Logger logger = LoggerFactory.getLogger(VertMesh.class);
 
 	/**
 	 * Order how bytes are read for vert mesh files
@@ -95,8 +99,7 @@ public class VertMesh {
 				objStaticMesh.export(mtlFile, objFile);
 				System.out.println("Created " + objFile);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error reading vert mesh file " + ff.getName(), e);
 			}
 		}
 

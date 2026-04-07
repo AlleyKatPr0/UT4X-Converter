@@ -137,7 +137,7 @@ public class PackageExporterTask extends Task<List<String>> {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Error executing command", e);
                 }
                 return processLogs;
             });
@@ -178,7 +178,7 @@ public class PackageExporterTask extends Task<List<String>> {
                         logs.add("Could not convert " + texFile.getName() + " to " + convTexFile.getName());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Error converting texture " + texFile.getName(), e);
                 }
             }
         }

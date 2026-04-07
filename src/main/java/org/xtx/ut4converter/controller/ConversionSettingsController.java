@@ -403,7 +403,6 @@ public class ConversionSettingsController implements Initializable {
 				this.conversionSettings.setScaleFactor(scaleFactorList.getSelectionModel().getSelectedItem());
 				this.conversionSettings.setExportOption(exportOptComboBox.getSelectionModel().getSelectedItem());
 			} catch (ClassCastException ce) {
-				ce.printStackTrace();
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Scale factor");

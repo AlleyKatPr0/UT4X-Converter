@@ -2,6 +2,8 @@ package org.xtx.ut4converter.tools.psk;
 
 import org.xtx.ut4converter.tools.BinUtils;
 import org.xtx.ut4converter.tools.psk.PSKStaticMesh.BinReadWrite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,6 +16,8 @@ import java.nio.ByteBuffer;
  */
 class RawWeight implements BinReadWrite {
 
+	private static final Logger logger = LoggerFactory.getLogger(RawWeight.class);
+
 	protected static final int DATA_SIZE = 12;
 	
 	private float weight;
@@ -24,7 +28,7 @@ class RawWeight implements BinReadWrite {
 		try {
 			read(bf);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error reading RawWeight", e);
 		}
 	}
 

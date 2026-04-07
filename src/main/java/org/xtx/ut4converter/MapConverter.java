@@ -262,8 +262,7 @@ public class MapConverter extends Task<T3DLevelConvertor> {
 					try {
 						logBuffWriter.write(TableRowLog.sdf.format(new Date(record.getMillis())) + " - " + record.getLevel().getName() + " - " + TableRowLog.getMessageFormatted(record) + "\n");
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.log(Level.WARNING, "Error writing to log file", e);
 					}
 				}
 				t.getItems().add(new TableRowLog(record));
@@ -852,9 +851,7 @@ public class MapConverter extends Task<T3DLevelConvertor> {
 			}
 		}
 		} catch (Exception e) {
-			System.out.println("Error while converting ressource " + ressource.getFullName(true) + " with file " + exportedFile.getName());
-			e.printStackTrace();
-			logger.log(Level.WARNING, e.getMessage(), e);
+			logger.log(Level.WARNING, "Error while converting ressource " + ressource.getFullName(true) + " with file " + exportedFile.getName(), e);
 		}
 		return wasConverted;
 	}
@@ -1173,8 +1170,7 @@ public class MapConverter extends Task<T3DLevelConvertor> {
 		try {
 			convert();
 		} catch (Throwable e) {
-			logger.severe(e.getMessage());
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return t3dLvlConvertor;
 	}
